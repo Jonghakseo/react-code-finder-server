@@ -1,6 +1,6 @@
 {
   "name": "react-code-finder-server",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "React Code Finder Server",
   "bin": "dist/bin.js",
   "scripts": {
