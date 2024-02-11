@@ -1,7 +1,7 @@
 {
   "name": "react-code-finder-server",
   "version": "0.0.4",
-  "description": "React Code Finder CLI",
+  "description": "React Code Finder Server",
   "bin": "dist/bin.js",
   "scripts": {
     "build": "tsc",
