@@ -3,10 +3,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getFile = exports.editFile = void 0;
 const fs = require("fs");
 function editFile(file, source) {
-    fs.writeFileSync(file, source);
+    try {
+        fs.writeFileSync(file, source);
+    }
+    catch (e) {
+        console.error(e);
+        throw e;
+    }
 }
 exports.editFile = editFile;
 function getFile(filePath) {
-    return fs.readFileSync(filePath, 'utf8');
+    try {
+        return fs.readFileSync(filePath, 'utf8');
+    }
+    catch (e) {
+        console.error(e);
+        throw e;
+    }
 }
 exports.getFile = getFile;

@@ -1,5 +1,5 @@
 {
-  "name": "react-code-finder-cli",
+  "name": "react-code-finder-server",
   "version": "0.0.3",
   "description": "React Code Finder CLI",
   "bin": "dist/bin.js",

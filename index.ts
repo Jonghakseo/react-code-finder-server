@@ -50,5 +50,5 @@ const server = http.createServer((req, res) => {
 })
 
 server.listen(port, () => {
-  console.log(`React-Code-Finder Server running at http://localhost:${port}/`);
+  console.log(`React Code Finder Server running at http://localhost:${port}/`);
 });
