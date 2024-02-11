@@ -16,36 +16,43 @@ const server = http.createServer((req, res) => {
         'Content-Type': 'text/html'
     };
     const { pathname, query } = url.parse(req.url, true);
-    switch (pathname) {
-        case '/getSource': {
-            const { file } = query;
-            const source = (0, sourceFile_1.getFile)(String(file));
-            res.writeHead(200, headers);
-            res.end(JSON.stringify({ source }));
-            return;
-        }
-        case '/openEditor': {
-            const { column, lineNumber, file } = query;
-            (0, launchEditor_1.launchEditor)(String(file), Number(lineNumber), Number(column));
-            res.writeHead(200, headers);
-            res.end();
-            break;
-        }
-        case '/editSource': {
-            const { file, source } = query;
-            (0, sourceFile_1.editFile)(String(file), String(source));
-            res.writeHead(200, headers);
-            res.end();
-            break;
-        }
-        default: {
-            res.writeHead(400, { 'Content-Type': 'text/html' });
-            res.end('Bad Request');
-            return;
+    try {
+        switch (pathname) {
+            case '/getSource': {
+                const { file } = query;
+                const source = (0, sourceFile_1.getFile)(String(file));
+                res.writeHead(200, headers);
+                res.end(JSON.stringify({ source }));
+                return;
+            }
+            case '/openEditor': {
+                const { column, lineNumber, file } = query;
+                (0, launchEditor_1.launchEditor)(String(file), Number(lineNumber), Number(column));
+                res.writeHead(200, headers);
+                res.end();
+                break;
+            }
+            case '/editSource': {
+                const { file, source } = query;
+                (0, sourceFile_1.editFile)(String(file), String(source));
+                res.writeHead(200, headers);
+                res.end();
+                break;
+            }
+            default: {
+                res.writeHead(400, { 'Content-Type': 'text/html' });
+                res.end('Bad Request');
+                return;
+            }
         }
     }
-    res.writeHead(500, headers);
-    res.end();
+    catch (e) {
+        res.writeHead(500, headers);
+        res.end();
+    }
+    finally {
+        res.end();
+    }
 });
 server.listen(port, () => {
     console.log(`React Code Finder Server running at http://localhost:${port}/`);

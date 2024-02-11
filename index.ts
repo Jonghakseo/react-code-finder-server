@@ -16,37 +16,42 @@ const server = http.createServer((req, res) => {
     'Content-Type': 'text/html'
   };
   const {pathname, query} = url.parse(req.url!, true)
+  try {
 
-  switch (pathname) {
-    case '/getSource': {
-      const {file} = query;
-      const source = getFile(String(file))
-      res.writeHead(200, headers);
-      res.end(JSON.stringify({source}));
-      return;
+    switch (pathname) {
+      case '/getSource': {
+        const {file} = query;
+        const source = getFile(String(file))
+        res.writeHead(200, headers);
+        res.end(JSON.stringify({source}));
+        return;
+      }
+      case '/openEditor': {
+        const {column, lineNumber, file} = query;
+        launchEditor(String(file), Number(lineNumber), Number(column))
+        res.writeHead(200, headers);
+        res.end();
+        break;
+      }
+      case '/editSource': {
+        const {file, source} = query;
+        editFile(String(file), String(source))
+        res.writeHead(200, headers);
+        res.end();
+        break;
+      }
+      default: {
+        res.writeHead(400, {'Content-Type': 'text/html'});
+        res.end('Bad Request');
+        return;
+      }
     }
-    case '/openEditor': {
-      const {column, lineNumber, file} = query;
-      launchEditor(String(file), Number(lineNumber), Number(column))
-      res.writeHead(200, headers);
-      res.end();
-      break;
-    }
-    case '/editSource': {
-      const {file, source} = query;
-      editFile(String(file), String(source))
-      res.writeHead(200, headers);
-      res.end();
-      break;
-    }
-    default: {
-      res.writeHead(400, {'Content-Type': 'text/html'});
-      res.end('Bad Request');
-      return;
-    }
+  } catch (e) {
+    res.writeHead(500, headers);
+    res.end();
+  }finally {
+    res.end();
   }
-  res.writeHead(500, headers);
-  res.end();
 })
 
 server.listen(port, () => {
