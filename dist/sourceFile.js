@@ -8,7 +8,6 @@ function editFile(file, source) {
     }
     catch (e) {
         console.error(e);
-        throw e;
     }
 }
 exports.editFile = editFile;
@@ -18,7 +17,7 @@ function getFile(filePath) {
     }
     catch (e) {
         console.error(e);
-        throw e;
+        return `${e}`;
     }
 }
 exports.getFile = getFile;

@@ -6,7 +6,6 @@ function editFile(file: string, source: string) {
     fs.writeFileSync(file, source);
   } catch (e) {
     console.error(e);
-    throw e
   }
 }
 
@@ -15,7 +14,7 @@ function getFile(filePath: string) {
     return fs.readFileSync(filePath, 'utf8');
   } catch (e) {
     console.error(e);
-    throw e
+    return `${e}`;
   }
 }
 
