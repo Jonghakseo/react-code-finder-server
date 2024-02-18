@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "dev": "ts-node index.ts",
-    "start": "pnpm build && npx ."
+    "start:dev": "pnpm build && npx .",
+    "start": "node dist/index.js"
   },
   "repository": {
     "type": "git",
