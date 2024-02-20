@@ -33,10 +33,15 @@ const server = http.createServer((req, res) => {
                 break;
             }
             case '/editSource': {
-                const { file, source } = query;
-                (0, sourceFile_1.editFile)(String(file), String(source));
-                res.writeHead(200, headers);
-                res.end();
+                const { file } = query;
+                let body = '';
+                req.on('data', (chunk) => body += chunk);
+                req.on('end', () => {
+                    const { source } = JSON.parse(body);
+                    (0, sourceFile_1.editFile)(String(file), source);
+                    res.writeHead(200, headers);
+                    res.end();
+                });
                 break;
             }
             default: {

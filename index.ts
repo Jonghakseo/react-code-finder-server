@@ -34,10 +34,15 @@ const server = http.createServer((req, res) => {
         break;
       }
       case '/editSource': {
-        const {file, source} = query;
-        editFile(String(file), String(source))
-        res.writeHead(200, headers);
-        res.end();
+        const { file} = query;
+        let body = '';
+        req.on('data', (chunk) => body += chunk);
+        req.on('end', () => {
+          const { source } = JSON.parse(body);
+          editFile(String(file), source)
+          res.writeHead(200, headers);
+          res.end();
+        });
         break;
       }
       default: {
@@ -49,7 +54,7 @@ const server = http.createServer((req, res) => {
   } catch (e) {
     res.writeHead(500, headers);
     res.end();
-  }finally {
+  } finally {
     res.end();
   }
 })
