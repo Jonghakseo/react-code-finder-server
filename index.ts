@@ -17,7 +17,6 @@ const server = http.createServer((req, res) => {
   };
   const {pathname, query} = url.parse(req.url!, true)
   try {
-
     switch (pathname) {
       case '/getSource': {
         const {file} = query;
@@ -54,11 +53,12 @@ const server = http.createServer((req, res) => {
   } catch (e) {
     res.writeHead(500, headers);
     res.end();
-  } finally {
-    res.end();
   }
 })
 
 server.listen(port, () => {
   console.log(`React Code Finder Server running at http://localhost:${port}/`);
+});
+server.on('error', (e) => {
+  console.warn(e);
 });
