@@ -32,6 +32,7 @@ function isTerminalEditor(editor: string) {
   switch (editor) {
     case "vi":
     case "vim":
+    case "nvim":
     case "emacs":
     case "nano": {
       return true;
@@ -83,6 +84,10 @@ const COMMON_EDITORS_MACOS = {
     "/Applications/GoLand.app/Contents/MacOS/goland",
   "/Applications/Rider.app/Contents/MacOS/rider":
     "/Applications/Rider.app/Contents/MacOS/rider",
+  "/Applications/Cursor.app/Contents/MacOS/Cursor":
+    "/Applications/Cursor.app/Contents/MacOS/Cursor",
+  "/Applications/Windsurf.app/Contents/MacOS/Electron":
+    "/Applications/Windsurf.app/Contents/MacOS/Electron",
 };
 
 const COMMON_EDITORS_LINUX = {
@@ -99,6 +104,7 @@ const COMMON_EDITORS_LINUX = {
   "rubymine.sh": "rubymine",
   sublime_text: "sublime_text",
   vim: "vim",
+  nvim: "nvim",
   "webstorm.sh": "webstorm",
   "goland.sh": "goland",
   "rider.sh": "rider",
@@ -160,6 +166,7 @@ function getArgumentsForLineNumber(
       return ["-n" + lineNumber, "-c" + colNumber, fileName];
     }
     case "vim":
+    case "nvim":
     case "mvim":
     case "joe":
     case "gvim": {
@@ -176,13 +183,13 @@ function getArgumentsForLineNumber(
     }
     case "code":
     case "Code":
+    case "Cursor":
+    case "cursor":
+    case "windsurf":
+    case "Windsurf":
     case "code-insiders":
     case "Code - Insiders":
     case "vscodium":
-    case "cursor":
-    case "Cursor":
-    case "windsurf":
-    case "Windsurf":
     case "VSCodium": {
       return ["-g", fileName + ":" + lineNumber + ":" + colNumber];
     }
@@ -217,7 +224,7 @@ function getArgumentsForLineNumber(
 function guessEditor(): string[] {
   // Explicit config always wins
   if (process.env.REACT_EDITOR) {
-    return shellQuote.parse(process.env.REACT_EDITOR);
+    return shellQuote.parse(process.env.REACT_EDITOR) as any;
   }
 
   // We can find out which editor is currently running by:
@@ -229,7 +236,7 @@ function guessEditor(): string[] {
       const processNames = Object.keys(COMMON_EDITORS_MACOS);
       for (let i = 0; i < processNames.length; i++) {
         const processName = processNames[i];
-        if (output.includes(processName)) {
+        if (output.indexOf(processName) !== -1) {
           return [(COMMON_EDITORS_MACOS as any)[processName]];
         }
       }
@@ -245,7 +252,7 @@ function guessEditor(): string[] {
       for (let i = 0; i < runningProcesses.length; i++) {
         const processPath = runningProcesses[i].trim();
         const processName = path.basename(processPath);
-        if (COMMON_EDITORS_WIN.includes(processName)) {
+        if (COMMON_EDITORS_WIN.indexOf(processName) !== -1) {
           return [processPath];
         }
       }
@@ -259,7 +266,7 @@ function guessEditor(): string[] {
       const processNames = Object.keys(COMMON_EDITORS_LINUX);
       for (let i = 0; i < processNames.length; i++) {
         const processName = processNames[i];
-        if (output.includes(processName)) {
+        if (output.indexOf(processName) !== -1) {
           return [(COMMON_EDITORS_LINUX as any)[processName] as string];
         }
       }
@@ -281,6 +288,7 @@ function guessEditor(): string[] {
 function printInstructions(fileName: string, errorMessage: string | null) {
   console.log();
   console.log("Could not open " + path.basename(fileName) + " in the editor.");
+
   if (errorMessage) {
     if (errorMessage[errorMessage.length - 1] !== ".") {
       errorMessage += ".";
@@ -318,6 +326,7 @@ function launchEditor(fileName: string, lineNumber: number, colNumber: number) {
   }
 
   let [editor, ...args] = guessEditor();
+  console.log("editor", editor);
 
   if (!editor) {
     printInstructions(fileName, null);
